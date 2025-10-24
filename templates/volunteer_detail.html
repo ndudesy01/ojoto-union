@@ -1,10 +1,132 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Back Button -->
+            <div class="mb-4">
+                <a href="{{ url_for('volunteer_opportunities') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Opportunities
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">{{ opportunity.title }}</h4>
+                        {% if opportunity.is_urgent %}
+                        <span class="badge bg-warning">
+                            <i class="fas fa-exclamation-circle me-1"></i>URGENT
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Organization Info -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-primary">
+                                <i class="fas fa-building me-2"></i>{{ opportunity.organization }}
+                            </h5>
+                        </div>
+                    </div>
+
+                    <!-- Opportunity Details -->
+                    <div class="row mb-4">
+                        {% if opportunity.location %}
+                        <div class="col-md-6 mb-3">
+                            <strong><i class="fas fa-map-marker-alt me-2 text-primary"></i>Location:</strong>
+                            <p class="mb-0">{{ opportunity.location }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if opportunity.time_commitment %}
+                        <div class="col-md-6 mb-3">
+                            <strong><i class="fas fa-clock me-2 text-primary"></i>Time Commitment:</strong>
+                            <p class="mb-0">{{ opportunity.time_commitment }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if opportunity.skills_needed %}
+                        <div class="col-12 mb-3">
+                            <strong><i class="fas fa-tools me-2 text-primary"></i>Skills Needed:</strong>
+                            <p class="mb-0">{{ opportunity.skills_needed }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <h5 class="text-primary">Description</h5>
+                        <p class="card-text" style="white-space: pre-line;">{{ opportunity.description }}</p>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">Contact Information</h5>
+                            {% if opportunity.contact_email %}
+                            <p class="mb-2">
+                                <i class="fas fa-envelope me-2"></i>
+                                <strong>Email:</strong> 
+                                <a href="mailto:{{ opportunity.contact_email }}">{{ opportunity.contact_email }}</a>
+                            </p>
+                            {% endif %}
+                            
+                            {% if opportunity.contact_phone %}
+                            <p class="mb-0">
+                                <i class="fas fa-phone me-2"></i>
+                                <strong>Phone:</strong> {{ opportunity.contact_phone }}
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Application Stats -->
+                    <div class="row text-center mb-4">
+                        <div class="col-md-4">
+                            <div class="border rounded p-3">
+                                <h4 class="text-primary mb-1">{{ opportunity.applications|length }}</h4>
+                                <small class="text-muted">Total Applications</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="border rounded p-3">
+                                <h4 class="text-success mb-1">
+                                    {{ opportunity.applications|selectattr('status', 'equalto', 'approved')|list|length }}
+                                </h4>
+                                <small class="text-muted">Approved</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="border rounded p-3">
+                                <h4 class="text-warning mb-1">
+                                    {{ opportunity.applications|selectattr('status', 'equalto', 'pending')|list|length }}
+                                </h4>
+                                <small class="text-muted">Pending</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Apply Button -->
+                    <div class="text-center">
+                        <a href="{{ url_for('apply_volunteer', opportunity_id=opportunity.id) }}" 
+                           class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Apply for This Opportunity
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="card-footer text-muted">
+                    <small>
+                        Posted by {{ opportunity.created_by }} on 
+                        {{ opportunity.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

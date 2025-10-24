@@ -1,210 +1,1459 @@
 {% extends "base.html" %}
 
-{% block title %}Home - Ojoto Union NA1{% endblock %}
-
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section bg-primary text-white py-5">
+<!-- Enhanced Hero Section -->
+<section class="hero-section">
+    <div class="hero-background">
+        <div class="hero-overlay"></div>
+        <div class="hero-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+            <div class="shape shape-5"></div>
+            <div class="shape shape-6"></div>
+        </div>
+        <div class="hero-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+    </div>
+
     <div class="container">
-        <div class="row align-items-center">
+        <div class="row align-items-center min-vh-80">
             <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-4">Welcome to Ojoto Union NA1</h1>
-                <p class="lead mb-4">Streamlining student organization and communication for our growing tech community. Connect, collaborate, and stay informed with our powerful platform.</p>
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <i class="fas fa-users me-2"></i>
+                        Welcome to Our Community
+                    </div>
 
-                {% if not current_user.is_authenticated %}
-                <div class="hero-buttons">
-                    <a href="{{ url_for('register') }}" class="btn btn-light btn-lg me-3 mb-2">
-                        Get Started Free
-                    </a>
-                    <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg mb-2">
-                        Existing Member
-                    </a>
-                </div>
-                {% else %}
-                <div class="hero-buttons">
-                    <a href="{{ url_for('dashboard') }}" class="btn btn-light btn-lg me-3 mb-2">
-                        Go to Dashboard
-                    </a>
-                    {% if current_user.is_admin %}
-                    <a href="{{ url_for('post_announcement') }}" class="btn btn-outline-light btn-lg mb-2">
-                        Post Announcement
-                    </a>
-                    {% endif %}
-                </div>
-                {% endif %}
+                    <h1 class="hero-title">
+                        <span class="title-main">Ojoto Union</span>
+                        <span class="title-sub">NA1 Community</span>
+                    </h1>
 
-                <div class="hero-stats mt-5">
-                    <div class="row">
-                        <div class="col-4">
-                            <div class="text-center">
-                                <h3 class="fw-bold mb-1">{{ user_count }}</h3>
-                                <small>Active Members</small>
-                            </div>
+                    <p class="hero-description">
+                        Building bridges, fostering growth, and creating lasting connections.
+                        Join our vibrant community where every voice matters and every member thrives.
+                    </p>
+
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-number" data-count="500">0</div>
+                            <div class="stat-label">Active Members</div>
                         </div>
-                        <div class="col-4">
-                            <div class="text-center">
-                                <h3 class="fw-bold mb-1">{{ announcement_count }}</h3>
-                                <small>Announcements</small>
-                            </div>
+                        <div class="stat-item">
+                            <div class="stat-number" data-count="50">0</div>
+                            <div class="stat-label">Events Yearly</div>
                         </div>
-                        <div class="col-4">
-                            <div class="text-center">
-                                <h3 class="fw-bold mb-1">24/7</h3>
-                                <small>Support</small>
-                            </div>
+                        <div class="stat-item">
+                            <div class="stat-number" data-count="25">0</div>
+                            <div class="stat-label">Years Strong</div>
                         </div>
+                    </div>
+
+                    <div class="hero-buttons">
+                        {% if not session.user_id %}
+                        <a href="{{ url_for('register') }}" class="btn btn-hero-primary">
+                            <i class="fas fa-rocket me-2"></i>
+                            Join Our Community
+                        </a>
+                        <a href="{{ url_for('login') }}" class="btn btn-hero-secondary">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Member Login
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('post_announcement') }}" class="btn btn-hero-primary">
+                            <i class="fas fa-bullhorn me-2"></i>
+                            Post Announcement
+                        </a>
+                        <a href="#announcements" class="btn btn-hero-secondary">
+                            <i class="fas fa-newspaper me-2"></i>
+                            View Updates
+                        </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
+
             <div class="col-lg-6">
-                <div class="hero-image text-center">
-                    <div class="card shadow-lg border-0">
-                        <div class="card-body p-4">
-                            <div class="placeholder-graphic">
-                                <div class="graphic-header bg-primary text-white p-3 rounded-top">
-                                    <h5 class="mb-0">📢 Latest Announcement</h5>
-                                </div>
-                                <div class="graphic-content p-4">
-                                    {% if announcements %}
-                                    <h6 class="text-start">{{ announcements[0].title[:50] }}{% if announcements[0].title|length > 50 %}...{% endif %}</h6>
-                                    <p class="text-muted text-start small mb-0">
-                                        {{ announcements[0].content[:100] }}{% if announcements[0].content|length > 100 %}...{% endif %}
-                                    </p>
-                                    {% else %}
-                                    <h6 class="text-start">Welcome to Ojoto Union!</h6>
-                                    <p class="text-muted text-start small mb-0">
-                                        No announcements yet. Be the first to post when you register as an admin!
-                                    </p>
-                                    {% endif %}
-                                </div>
-                            </div>
+                <div class="hero-visual">
+                    <!-- Active Discussions Icon -->
+                    <div class="floating-card card-1" onclick="navigateToSection('discussions')">
+                        <i class="fas fa-comments"></i>
+                        <span>Active Discussions</span>
+                        <div class="card-tooltip">Click to join discussions</div>
+                    </div>
+
+                    <!-- Events Icon -->
+                    <div class="floating-card card-2" onclick="navigateToSection('events')">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Events</span>
+                        <div class="card-tooltip">Click to view events</div>
+                    </div>
+
+                    <!-- Community Icon -->
+                    <div class="floating-card card-3" onclick="navigateToSection('community')">
+                        <i class="fas fa-handshake"></i>
+                        <span>Community</span>
+                        <div class="card-tooltip">Click to explore community</div>
+                    </div>
+
+                    <div class="hero-main-icon">
+                        <div class="icon-wrapper">
+                            <i class="fas fa-users"></i>
                         </div>
+                        <div class="icon-glow"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="hero-scroll-indicator">
+        <div class="scroll-arrow"></div>
+    </div>
 </section>
+
+<!-- Active Discussions Section -->
+<section id="discussions-section" class="section-padding">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="section-title">Active Discussions</h2>
+                <p class="section-subtitle">Join the conversation and share your thoughts</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="discussion-card">
+                    <div class="discussion-header">
+                        <h4>Q&A Forum</h4>
+                        <span class="discussion-badge active">Live</span>
+                    </div>
+                    <p>Coordinator questions and student answers in real-time discussions.</p>
+                    <div class="discussion-stats">
+                        <span><i class="fas fa-comments"></i> 45 Active</span>
+                        <span><i class="fas fa-users"></i> 120 Participants</span>
+                    </div>
+                    <a href="{{ url_for('questions') }}" class="btn btn-discussion">
+                        <i class="fas fa-arrow-right me-2"></i>Join Discussion
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="discussion-card">
+                    <div class="discussion-header">
+                        <h4>Community Forum</h4>
+                        <span class="discussion-badge">Popular</span>
+                    </div>
+                    <p>General discussions about community matters and member interactions.</p>
+                    <div class="discussion-stats">
+                        <span><i class="fas fa-comments"></i> 28 Active</span>
+                        <span><i class="fas fa-users"></i> 89 Participants</span>
+                    </div>
+                    <a href="{{ url_for('community') }}" class="btn btn-discussion">
+                        <i class="fas fa-arrow-right me-2"></i>Explore Forum
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Events Section -->
+<section id="events-section" class="section-padding bg-light">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="section-title">Upcoming Events</h2>
+                <p class="section-subtitle">Don't miss out on our community gatherings</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="event-card">
+                    <div class="event-date">
+                        <span class="event-day">15</span>
+                        <span class="event-month">DEC</span>
+                    </div>
+                    <div class="event-content">
+                        <h5>Annual General Meeting</h5>
+                        <p class="event-time"><i class="fas fa-clock"></i> 2:00 PM - 5:00 PM</p>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Community Hall</p>
+                        <p>Quarterly meeting to discuss community progress and future plans.</p>
+                        <button class="btn btn-event" onclick="showFeatureMessage('Annual General Meeting')">
+                            <i class="fas fa-calendar-plus me-2"></i>RSVP
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="event-card">
+                    <div class="event-date">
+                        <span class="event-day">22</span>
+                        <span class="event-month">DEC</span>
+                    </div>
+                    <div class="event-content">
+                        <h5>Christmas Celebration</h5>
+                        <p class="event-time"><i class="fas fa-clock"></i> 6:00 PM - 10:00 PM</p>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Main Square</p>
+                        <p>Annual Christmas party with food, music, and community bonding.</p>
+                        <button class="btn btn-event" onclick="showFeatureMessage('Christmas Celebration')">
+                            <i class="fas fa-calendar-plus me-2"></i>RSVP
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="event-card">
+                    <div class="event-date">
+                        <span class="event-day">05</span>
+                        <span class="event-month">JAN</span>
+                    </div>
+                    <div class="event-content">
+                        <h5>New Year Planning</h5>
+                        <p class="event-time"><i class="fas fa-clock"></i> 10:00 AM - 12:00 PM</p>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Online Meeting</p>
+                        <p>Strategic planning session for the upcoming year's activities.</p>
+                        <button class="btn btn-event" onclick="showFeatureMessage('New Year Planning')">
+                            <i class="fas fa-calendar-plus me-2"></i>RSVP
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button class="btn btn-primary" onclick="showFeatureMessage('All Events')">
+                <i class="fas fa-calendar-alt me-2"></i>View All Events
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Community Section -->
+<section id="community-section" class="section-padding">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="section-title">Our Community</h2>
+                <p class="section-subtitle">Connect, share, and grow together</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="community-feature">
+                    <div class="community-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <h4>Member Directory</h4>
+                    <p>Connect with other community members and build your network.</p>
+                    <a href="{{ url_for('members') }}" class="btn btn-community">
+                        Explore Members
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="community-feature">
+                    <div class="community-icon">
+                        <i class="fas fa-photo-video"></i>
+                    </div>
+                    <h4>Photo Gallery</h4>
+                    <p>Browse through photos from our community events and gatherings.</p>
+                    <!-- UPDATED: Functional Gallery Link -->
+                    <a href="{{ url_for('gallery') }}" class="btn btn-community">
+                        View Gallery
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="community-feature">
+                    <div class="community-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h4>Volunteer Opportunities</h4>
+                    <p>Find ways to contribute and make a difference in our community.</p>
+                    <a href="{{ url_for('volunteer_opportunities') }}" class="btn btn-community">
+                        Get Involved
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 
 <!-- Features Section -->
 <section class="features-section py-5">
     <div class="container">
         <div class="row text-center mb-5">
-            <div class="col-lg-8 mx-auto">
-                <h2 class="display-5 fw-bold mb-3">Why Choose Ojoto Union NA1?</h2>
-                <p class="lead text-muted">Designed specifically for tech student organizations to enhance collaboration and communication.</p>
+            <div class="col-12">
+                <h2 class="section-title">Why Join Our Community?</h2>
+                <p class="section-subtitle">Discover the benefits of being part of our growing family</p>
             </div>
         </div>
 
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="feature-card text-center p-4 h-100">
-                    <div class="feature-icon bg-primary bg-gradient text-white rounded-circle p-3 mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                        <i class="fas fa-users fa-2x"></i>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card" onclick="navigateToSection('announcements')" style="cursor: pointer;">
+                    <div class="feature-icon">
+                        <i class="fas fa-bullhorn"></i>
                     </div>
-                    <h4 class="fw-bold mb-3">Easy Organization</h4>
-                    <p class="text-muted">Efficiently manage student members, track participation, and maintain organized records with our intuitive system.</p>
+                    <h4>Instant Updates</h4>
+                    <p>Get real-time notifications about meetings, events, and important community announcements.</p>
+                    <div class="feature-hover">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="feature-card text-center p-4 h-100">
-                    <div class="feature-icon bg-success bg-gradient text-white rounded-circle p-3 mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                        <i class="fas fa-bullhorn fa-2x"></i>
+
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
                     </div>
-                    <h4 class="fw-bold mb-3">Instant Announcements</h4>
-                    <p class="text-muted">Share important updates, event information, and news instantly with all members through our announcement system.</p>
+                    <h4>Interactive Q&A</h4>
+                    <p>Coordinators can ask questions and get immediate responses from the community members.</p>
+                    <div class="feature-hover">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="feature-card text-center p-4 h-100">
-                    <div class="feature-icon bg-info bg-gradient text-white rounded-circle p-3 mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                        <i class="fas fa-shield-alt fa-2x"></i>
+
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-handshake"></i>
                     </div>
-                    <h4 class="fw-bold mb-3">Secure Platform</h4>
-                    <p class="text-muted">Your data is protected with enterprise-grade security features and reliable authentication systems.</p>
+                    <h4>Networking</h4>
+                    <p>Connect with fellow members, build relationships, and grow your professional network.</p>
+                    <div class="feature-hover">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Recent Announcements Section -->
-<section class="announcements-section bg-light py-5">
+<!-- Announcements Section -->
+<section id="announcements" class="announcements-section py-5 bg-light">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-10 mx-auto">
-                <div class="section-header text-center mb-5">
-                    <h2 class="display-6 fw-bold mb-3">Recent Announcements</h2>
-                    <p class="lead text-muted">Stay updated with the latest news and information from your organization.</p>
-                </div>
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="section-title text-center">Latest Announcements</h2>
+                <p class="section-subtitle text-center">Stay updated with community news and events</p>
+            </div>
+        </div>
 
-                {% if announcements %}
-                <div class="row g-4">
-                    {% for announcement in announcements %}
-                    <div class="col-md-6">
-                        <div class="announcement-card card h-100 border-0 shadow-sm">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="announcement-badge bg-primary rounded-circle p-2 me-3">
-                                        <i class="fas fa-bullhorn text-white"></i>
-                                    </div>
-                                    <div>
-                                        <h5 class="card-title mb-0">{{ announcement.title }}</h5>
-                                        <small class="text-muted">By {{ announcement.author.username }}</small>
-                                    </div>
-                                </div>
-                                <p class="card-text">{{ announcement.content }}</p>
+        {% if announcements %}
+        <div class="row">
+            <div class="col-12">
+                {% for announcement in announcements %}
+                <div class="announcement-card card mb-4 {% if announcement.is_urgent %}urgent-announcement{% endif %}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h4 class="card-title mb-0">
+                                {% if announcement.is_urgent %}
+                                <span class="badge urgent-badge">
+                                    <i class="fas fa-exclamation-circle me-1"></i>URGENT
+                                </span>
+                                {% endif %}
+                                {{ announcement.title }}
+                            </h4>
+                            <div class="announcement-actions">
+                                {% if session.user_id and announcement.author == session.username %}
+                                <a href="{{ url_for('delete_announcement', id=announcement.id) }}"
+                                   class="btn btn-sm btn-outline-danger delete-btn"
+                                   onclick="return confirm('Are you sure you want to delete this announcement?')">
+                                    <i class="fas fa-trash me-1"></i>Delete
+                                </a>
+                                {% endif %}
                             </div>
-                            <div class="card-footer bg-transparent border-top-0">
-                                <small class="text-muted">
+                        </div>
+
+                        <div class="announcement-content mb-3">
+                            <p class="card-text">{{ announcement.content }}</p>
+                        </div>
+
+                        <div class="announcement-meta d-flex justify-content-between align-items-center">
+                            <div class="author-info">
+                                <span class="text-muted">
+                                    <i class="fas fa-user me-1"></i>
+                                    Posted by <strong>{{ announcement.author }}</strong>
+                                </span>
+                            </div>
+                            <div class="date-info">
+                                <span class="text-muted">
                                     <i class="fas fa-clock me-1"></i>
                                     {{ announcement.created_at.strftime('%B %d, %Y at %I:%M %p') }}
-                                </small>
+                                </span>
                             </div>
                         </div>
                     </div>
-                    {% endfor %}
                 </div>
-                {% else %}
-                <div class="text-center py-4">
-                    <div class="empty-state">
-                        <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
-                        <h4 class="text-muted">No Announcements Yet</h4>
-                        <p class="text-muted">Be the first to post an announcement when you register!</p>
-                    </div>
-                </div>
-                {% endif %}
-
-                {% if announcements %}
-                <div class="text-center mt-4">
-                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">
-                        View All Announcements
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-12">
+                <div class="empty-state text-center py-5">
+                    <i class="fas fa-newspaper fa-4x text-muted mb-3"></i>
+                    <h4 class="text-muted">No announcements yet</h4>
+                    <p class="text-muted">Be the first to share exciting news with the community!</p>
+                    {% if session.user_id %}
+                    <a href="{{ url_for('post_announcement') }}" class="btn btn-primary mt-3">
+                        <i class="fas fa-plus me-2"></i>Create First Announcement
                     </a>
+                    {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-primary mt-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login to Post
+                    </a>
+                    {% endif %}
                 </div>
-                {% endif %}
             </div>
         </div>
+        {% endif %}
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="cta-section py-5 bg-primary text-white">
-    <div class="container">
-        <div class="row justify-content-center text-center">
-            <div class="col-lg-8">
-                <h2 class="display-6 fw-bold mb-3">Ready to Get Started?</h2>
-                <p class="lead mb-4">Join hundreds of students who are already using Ojoto Union NA1 to streamline their organization's communication.</p>
-                {% if not current_user.is_authenticated %}
-                <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
-                    Create Your Account Now
-                </a>
-                {% else %}
-                <a href="{{ url_for('dashboard') }}" class="btn btn-light btn-lg">
-                    Go to Dashboard
-                </a>
-                {% endif %}
+<!-- Notification Modal -->
+<div id="featureModal" class="modal fade">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="featureModalTitle">Feature Notification</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-info-circle fa-3x text-primary mb-3"></i>
+                <p id="featureModalMessage">This feature is coming soon!</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got it!</button>
             </div>
         </div>
     </div>
-</section>
+</div>
+
+<style>
+/* Section padding */
+.section-padding {
+    padding: 80px 0;
+}
+
+/* Discussion Cards */
+.discussion-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border-left: 4px solid #667eea;
+}
+
+.discussion-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.discussion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.discussion-badge {
+    background: #28a745;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.discussion-badge.active {
+    background: #dc3545;
+}
+
+.discussion-stats {
+    display: flex;
+    gap: 15px;
+    margin: 15px 0;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.btn-discussion {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-discussion:hover {
+    transform: translateX(5px);
+    color: white;
+}
+
+/* Event Cards */
+.event-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 20px;
+    transition: all 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.event-date {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 70px;
+}
+
+.event-day {
+    font-size: 24px;
+    font-weight: 700;
+    display: block;
+}
+
+.event-month {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.event-content {
+    flex: 1;
+}
+
+.event-time, .event-location {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.btn-event {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.btn-event:hover {
+    background: #218838;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Community Features */
+.community-feature {
+    text-align: center;
+    padding: 30px 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.community-feature:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.community-icon {
+    font-size: 3rem;
+    color: #667eea;
+    margin-bottom: 20px;
+}
+
+.btn-community {
+    background: transparent;
+    border: 2px solid #667eea;
+    color: #667eea;
+    padding: 8px 20px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-community:hover {
+    background: #667eea;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Feature Cards */
+.feature-card {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    color: #667eea;
+    margin-bottom: 20px;
+}
+
+.feature-card h4 {
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.feature-hover {
+    position: absolute;
+    bottom: -40px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background: #667eea;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.feature-card:hover .feature-hover {
+    bottom: 20px;
+    opacity: 1;
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: #6c757d;
+}
+
+/* Modal Styles */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Keep all your existing hero section styles below */
+/* Vibrant Color Scheme for Hero Section */
+.hero-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: linear-gradient(135deg,
+        #667eea 0%,
+        #764ba2 25%,
+        #f093fb 50%,
+        #f5576c 75%,
+        #4facfe 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg,
+        rgba(102, 126, 234, 0.8) 0%,
+        rgba(118, 75, 162, 0.7) 50%,
+        rgba(240, 147, 251, 0.6) 100%);
+}
+
+/* Colorful Shapes */
+.hero-shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+    filter: blur(1px);
+}
+
+.shape-1 {
+    width: 120px;
+    height: 120px;
+    top: 10%;
+    left: 5%;
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    animation-delay: 0s;
+    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+}
+
+.shape-2 {
+    width: 80px;
+    height: 80px;
+    top: 70%;
+    right: 10%;
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    animation-delay: 2s;
+    box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4);
+}
+
+.shape-3 {
+    width: 100px;
+    height: 100px;
+    bottom: 20%;
+    left: 15%;
+    background: linear-gradient(45deg, #ffd93d, #ff9a3d);
+    animation-delay: 4s;
+    box-shadow: 0 10px 30px rgba(255, 217, 61, 0.4);
+}
+
+.shape-4 {
+    width: 60px;
+    height: 60px;
+    top: 30%;
+    right: 20%;
+    background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+    animation-delay: 1s;
+    box-shadow: 0 10px 30px rgba(108, 92, 231, 0.4);
+}
+
+.shape-5 {
+    width: 90px;
+    height: 90px;
+    top: 50%;
+    left: 80%;
+    background: linear-gradient(45deg, #fd79a8, #e84393);
+    animation-delay: 3s;
+    box-shadow: 0 10px 30px rgba(253, 121, 168, 0.4);
+}
+
+.shape-6 {
+    width: 70px;
+    height: 70px;
+    bottom: 10%;
+    right: 5%;
+    background: linear-gradient(45deg, #00cec9, #0984e3);
+    animation-delay: 5s;
+    box-shadow: 0 10px 30px rgba(0, 206, 201, 0.4);
+}
+
+/* Animated Particles */
+.hero-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.particle {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: particleFloat 20s linear infinite;
+}
+
+.particle:nth-child(1) {
+    width: 4px;
+    height: 4px;
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+    background: #ff6b6b;
+}
+
+.particle:nth-child(2) {
+    width: 6px;
+    height: 6px;
+    top: 60%;
+    left: 80%;
+    animation-delay: 5s;
+    background: #4ecdc4;
+}
+
+.particle:nth-child(3) {
+    width: 3px;
+    height: 3px;
+    top: 40%;
+    left: 40%;
+    animation-delay: 10s;
+    background: #ffd93d;
+}
+
+.particle:nth-child(4) {
+    width: 5px;
+    height: 5px;
+    top: 80%;
+    left: 30%;
+    animation-delay: 15s;
+    background: #6c5ce7;
+}
+
+.particle:nth-child(5) {
+    width: 4px;
+    height: 4px;
+    top: 10%;
+    left: 70%;
+    animation-delay: 2s;
+    background: #fd79a8;
+}
+
+.particle:nth-child(6) {
+    width: 3px;
+    height: 3px;
+    top: 90%;
+    left: 60%;
+    animation-delay: 8s;
+    background: #00cec9;
+}
+
+@keyframes particleFloat {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.hero-badge {
+    display: inline-block;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+    padding: 12px 20px;
+    border-radius: 50px;
+    font-size: 14px;
+    margin-bottom: 25px;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 25px;
+}
+
+.title-main {
+    display: block;
+    background: linear-gradient(45deg, #ffffff, #e3f2fd, #bbdefb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+.title-sub {
+    display: block;
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes titleGlow {
+    from {
+        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+    }
+    to {
+        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+    }
+}
+
+.hero-description {
+    font-size: 1.2rem;
+    margin-bottom: 35px;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.7;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.hero-stats {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 45px;
+}
+
+.stat-item {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 20px 15px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    display: block;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.btn-hero-primary {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24, #ff9ff3);
+    background-size: 200% 200%;
+    border: none;
+    padding: 15px 35px;
+    border-radius: 50px;
+    color: white;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    animation: buttonGlow 2s ease-in-out infinite alternate;
+}
+
+.btn-hero-primary:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 15px 35px rgba(255, 107, 107, 0.6);
+    color: white;
+    background-position: 100% 100%;
+}
+
+.btn-hero-secondary {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 15px 35px;
+    border-radius: 50px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.4s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.btn-hero-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 1);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes buttonGlow {
+    from {
+        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+    }
+    to {
+        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.8), 0 0 30px rgba(255, 107, 107, 0.6);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-20px) rotate(180deg);
+    }
+}
+
+.hero-visual {
+    position: relative;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-card {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 15px 20px;
+    border-radius: 15px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    text-align: center;
+    min-width: 140px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    z-index: 3;
+}
+
+.floating-card:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1) translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.floating-card i {
+    font-size: 1.5rem;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.floating-card span {
+    font-size: 0.9rem;
+    display: block;
+}
+
+.card-tooltip {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.floating-card:hover .card-tooltip {
+    opacity: 1;
+}
+
+.card-1 {
+    top: 20%;
+    left: 10%;
+    animation: floatCard 4s ease-in-out infinite;
+}
+
+.card-2 {
+    top: 60%;
+    right: 10%;
+    animation: floatCard 4s ease-in-out infinite 1.5s;
+}
+
+.card-3 {
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: floatCard 4s ease-in-out infinite 3s;
+}
+
+@keyframes floatCard {
+    0%, 100% {
+        transform: translateY(0) translateX(0);
+    }
+    50% {
+        transform: translateY(-15px) translateX(5px);
+    }
+}
+
+.hero-main-icon {
+    position: relative;
+    z-index: 2;
+}
+
+.icon-wrapper {
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: iconPulse 3s ease-in-out infinite;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.icon-wrapper i {
+    font-size: 5rem;
+    color: white;
+    text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.icon-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: glowPulse 2s ease-in-out infinite alternate;
+    z-index: -1;
+}
+
+@keyframes iconPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+}
+
+@keyframes glowPulse {
+    from {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+        opacity: 0.8;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+}
+
+.hero-scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+.scroll-arrow {
+    width: 30px;
+    height: 50px;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    position: relative;
+}
+
+.scroll-arrow::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+    animation: scrollBounce 2s infinite;
+}
+
+@keyframes scrollBounce {
+    0%, 100% {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+    50% {
+        transform: translateX(-50%) translateY(10px);
+        opacity: 0.7;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .title-sub {
+        font-size: 1.5rem;
+    }
+
+    .hero-stats {
+        gap: 20px;
+    }
+
+    .stat-item {
+        min-width: 100px;
+        padding: 15px 10px;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn-hero-primary,
+    .btn-hero-secondary {
+        width: 100%;
+        max-width: 280px;
+        text-align: center;
+    }
+
+    .floating-card {
+        min-width: 120px;
+        padding: 10px 15px;
+    }
+
+    .floating-card i {
+        font-size: 1.2rem;
+    }
+
+    .floating-card span {
+        font-size: 0.8rem;
+    }
+}
+
+/* Announcement Styles */
+.announcement-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.announcement-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.urgent-announcement {
+    border-left: 5px solid #dc3545;
+    background: linear-gradient(45deg, rgba(220, 53, 69, 0.05), transparent);
+}
+
+.urgent-badge {
+    background: #dc3545;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.announcement-actions {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.announcement-card:hover .announcement-actions {
+    opacity: 1;
+}
+
+.delete-btn {
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    background: #dc3545 !important;
+    color: white !important;
+    transform: scale(1.05);
+}
+
+.empty-state {
+    background: white;
+    border-radius: 15px;
+    padding: 60px 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Fix for the hero secondary button styles */
+.btn-hero-secondary {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 15px 35px;
+    border-radius: 50px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.4s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.btn-hero-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 1);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
+}
+</style>
+
+<script>
+function navigateToSection(section) {
+    const targetSection = document.getElementById(section + '-section');
+    if (targetSection) {
+        targetSection.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+function showFeatureMessage(featureName) {
+    const modal = new bootstrap.Modal(document.getElementById('featureModal'));
+    document.getElementById('featureModalMessage').textContent =
+        `The "${featureName}" feature is coming soon! We're working hard to bring you this functionality.`;
+    modal.show();
+}
+
+// Animate counter numbers
+function animateCounter(element) {
+    const target = parseInt(element.getAttribute('data-count'));
+    const duration = 2000;
+    const step = target / (duration / 16);
+    let current = 0;
+
+    const timer = setInterval(() => {
+        current += step;
+        if (current >= target) {
+            element.textContent = target;
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.floor(current);
+        }
+    }, 16);
+}
+
+// Initialize counters when they come into view
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const counters = entry.target.querySelectorAll('.stat-number');
+            counters.forEach(counter => {
+                if (!counter.classList.contains('animated')) {
+                    counter.classList.add('animated');
+                    animateCounter(counter);
+                }
+            });
+        }
+    });
+}, { threshold: 0.5 });
+
+// Observe the hero section for counter animation
+const heroSection = document.querySelector('.hero-section');
+if (heroSection) {
+    observer.observe(heroSection);
+}
+
+// Add scroll event listener for hero scroll indicator
+document.addEventListener('DOMContentLoaded', function() {
+    const scrollIndicator = document.querySelector('.hero-scroll-indicator');
+    if (scrollIndicator) {
+        scrollIndicator.addEventListener('click', function() {
+            window.scrollTo({
+                top: window.innerHeight,
+                behavior: 'smooth'
+            });
+        });
+    }
+});
+</script>
 {% endblock %}

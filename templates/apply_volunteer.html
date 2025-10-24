@@ -1,10 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-paper-plane me-2"></i>Apply for Volunteer Opportunity</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Opportunity Summary -->
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ opportunity.title }}</h5>
+                            <p class="card-text mb-2">
+                                <strong>Organization:</strong> {{ opportunity.organization }}
+                            </p>
+                            {% if opportunity.location %}
+                            <p class="card-text mb-0">
+                                <strong>Location:</strong> {{ opportunity.location }}
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <form method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="applicant_name" class="form-label">Full Name *</label>
+                                <input type="text" class="form-control" id="applicant_name" name="applicant_name" 
+                                       value="{{ session.username or '' }}" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="applicant_email" class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="applicant_email" name="applicant_email" 
+                                       placeholder="your.email@example.com" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="applicant_phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="applicant_phone" name="applicant_phone" 
+                                   placeholder="(123) 456-7890">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="skills" class="form-label">Your Skills & Experience</label>
+                            <textarea class="form-control" id="skills" name="skills" 
+                                      rows="3" placeholder="Describe your relevant skills, experience, and why you're interested..."></textarea>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="message" class="form-label">Additional Message (Optional)</label>
+                            <textarea class="form-control" id="message" name="message" 
+                                      rows="4" placeholder="Any additional information you'd like to share..."></textarea>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Application
+                            </button>
+                            <a href="{{ url_for('volunteer_detail', opportunity_id=opportunity.id) }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

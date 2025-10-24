@@ -1,10 +1,137 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1><i class="fas fa-user-friends me-2"></i>Member Directory</h1>
+                {% if session.user_id %}
+                <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">
+                    <i class="fas fa-edit me-2"></i>Edit My Profile
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Search Bar -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="GET" action="{{ url_for('search_members') }}">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" 
+                                   placeholder="Search members by name, profession, or location..." 
+                                   value="{{ search_query or '' }}">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search me-2"></i>Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Members Grid -->
+            {% if members %}
+            <div class="row">
+                {% for member in members %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card member-card h-100">
+                        <div class="card-body text-center">
+                            <!-- Profile Picture -->
+                            <div class="member-avatar mb-3">
+                                {% if member.profile_picture %}
+                                <img src="{{ member.profile_picture }}" alt="{{ member.full_name }}" 
+                                     class="rounded-circle" width="80" height="80">
+                                {% else %}
+                                <div class="avatar-placeholder rounded-circle d-inline-flex align-items-center justify-content-center bg-primary text-white"
+                                     style="width: 80px; height: 80px; font-size: 2rem;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Member Info -->
+                            <h5 class="card-title">{{ member.full_name }}</h5>
+                            
+                            {% if member.profession %}
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-briefcase me-1"></i>{{ member.profession }}
+                            </p>
+                            {% endif %}
+                            
+                            {% if member.location %}
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-map-marker-alt me-1"></i>{{ member.location }}
+                            </p>
+                            {% endif %}
+                            
+                            {% if member.bio %}
+                            <p class="card-text small text-muted mb-3">
+                                {{ member.bio[:100] }}{% if member.bio|length > 100 %}...{% endif %}
+                            </p>
+                            {% endif %}
+                            
+                            <!-- View Profile Button -->
+                            <a href="{{ url_for('member_detail', member_id=member.id) }}" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>View Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Members Count -->
+            <div class="text-center mt-4">
+                <p class="text-muted">Showing {{ members|length }} members</p>
+            </div>
+            
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-user-friends fa-4x text-muted mb-3"></i>
+                <h4 class="text-muted">No members found</h4>
+                <p class="text-muted">
+                    {% if search_query %}
+                    No members match your search criteria. Try different keywords.
+                    {% else %}
+                    No public member profiles available yet.
+                    {% endif %}
+                </p>
+                {% if session.user_id %}
+                <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">
+                    <i class="fas fa-user-plus me-2"></i>Be the First to Create Profile
+                </a>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login to Create Profile
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.member-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.member-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: #007bff;
+}
+
+.avatar-placeholder {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+}
+
+.member-avatar img {
+    object-fit: cover;
+    border: 3px solid #f8f9fa;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+</style>
+{% endblock %}

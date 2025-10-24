@@ -1,10 +1,107 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Gallery Header -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h2 class="section-title">Photo Gallery</h2>
+            <p class="section-subtitle">Browse through photos from our community events and gatherings</p>
+        </div>
+    </div>
+
+    <!-- Gallery Images -->
+    <div class="row">
+        {% for image in gallery_images %}
+        <div class="col-lg-6 col-md-6 mb-4">
+            <div class="card gallery-card">
+                <img src="{{ url_for('static', filename='images/' + image.filename) }}"
+                     class="card-img-top gallery-image"
+                     alt="{{ image.title }}"
+                     onerror="this.src='{{ url_for('static', filename='images/placeholder.jpg') }}'">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ image.title }}</h5>
+                    <p class="card-text">{{ image.description }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Coming Soon Message -->
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <div class="coming-soon-alert">
+                <i class="fas fa-camera fa-3x text-primary mb-3"></i>
+                <h4>More Photos Coming Soon!</h4>
+                <p class="text-muted">We're constantly updating our gallery with new photos from community events.</p>
+                <p class="text-muted">Check back regularly for the latest updates!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Home Button -->
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <a href="{{ url_for('index') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.gallery-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.gallery-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.gallery-image {
+    height: 300px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.coming-soon-alert {
+    background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+    padding: 40px 20px;
+    border-radius: 15px;
+    border-left: 4px solid #667eea;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-bottom: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .gallery-image {
+        height: 250px;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+}
+</style>
+{% endblock %}

@@ -1,10 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body text-center py-4">
+                    <!-- Back Button -->
+                    <div class="text-start mb-4">
+                        <a href="{{ url_for('members') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Directory
+                        </a>
+                    </div>
+                    
+                    <!-- Profile Header -->
+                    <div class="member-avatar mb-4">
+                        {% if member.profile_picture %}
+                        <img src="{{ member.profile_picture }}" alt="{{ member.full_name }}" 
+                             class="rounded-circle" width="120" height="120">
+                        {% else %}
+                        <div class="avatar-placeholder rounded-circle d-inline-flex align-items-center justify-content-center bg-primary text-white"
+                             style="width: 120px; height: 120px; font-size: 3rem;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <h2 class="card-title">{{ member.full_name }}</h2>
+                    
+                    {% if member.profession %}
+                    <p class="lead text-muted mb-3">
+                        <i class="fas fa-briefcase me-2"></i>{{ member.profession }}
+                    </p>
+                    {% endif %}
+                    
+                    <!-- Contact Info -->
+                    <div class="row mb-4">
+                        {% if member.location %}
+                        <div class="col-12 mb-2">
+                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                            <span class="text-muted">{{ member.location }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if member.phone %}
+                        <div class="col-12 mb-2">
+                            <i class="fas fa-phone text-primary me-2"></i>
+                            <span class="text-muted">{{ member.phone }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="col-12">
+                            <i class="fas fa-user text-primary me-2"></i>
+                            <span class="text-muted">Member since {{ member.created_at.strftime('%B %Y') }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Bio -->
+                    {% if member.bio %}
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">About Me</h5>
+                            <p class="card-text">{{ member.bio }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Edit Button (if own profile) -->
+                    {% if session.user_id == member.user_id %}
+                    <div class="mt-4">
+                        <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">
+                            <i class="fas fa-edit me-2"></i>Edit My Profile
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,10 +1,126 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <!-- Question -->
+            <div class="card mb-4 {% if question.is_resolved %}border-success{% endif %}">
+                <div class="card-header {% if question.is_resolved %}bg-success text-white{% else %}bg-primary text-white{% endif %}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            {% if question.is_resolved %}
+                            <i class="fas fa-check-circle me-2"></i>
+                            {% else %}
+                            <i class="fas fa-question-circle me-2"></i>
+                            {% endif %}
+                            {{ question.title }}
+                        </h4>
+                        {% if question.is_resolved %}
+                        <span class="badge bg-light text-success">RESOLVED</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ question.content }}</p>
+                    <div class="question-meta text-muted">
+                        <small>
+                            <i class="fas fa-user me-1"></i>Asked by <strong>{{ question.author }}</strong>
+                            <i class="fas fa-clock ms-3 me-1"></i>{{ question.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                        </small>
+                    </div>
+                    
+                    {% if session.user_id and not question.is_resolved %}
+                        {% set user = User.query.get(session.user_id) %}
+                        {% if user and user.is_coordinator() and question.author_id == session.user_id %}
+                        <div class="mt-3">
+                            <a href="{{ url_for('mark_resolved', question_id=question.id) }}" 
+                               class="btn btn-success btn-sm"
+                               onclick="return confirm('Mark this question as resolved?')">
+                                <i class="fas fa-check me-1"></i>Mark as Resolved
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Answers Section -->
+            <div class="answers-section">
+                <h5 class="mb-3">
+                    <i class="fas fa-comments me-2"></i>
+                    Answers ({{ question.answers|length }})
+                </h5>
+
+                {% if question.answers %}
+                    {% for answer in question.answers %}
+                    <div class="card mb-3 answer-card {% if answer.is_helpful %}border-warning{% endif %}">
+                        <div class="card-body">
+                            <p class="card-text">{{ answer.content }}</p>
+                            <div class="answer-meta d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small class="text-muted">
+                                        <i class="fas fa-user me-1"></i>Answered by <strong>{{ answer.author }}</strong>
+                                        <i class="fas fa-clock ms-3 me-1"></i>{{ answer.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                                    </small>
+                                </div>
+                                {% if answer.is_helpful %}
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-star me-1"></i>Helpful
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-comment-slash fa-2x text-muted mb-3"></i>
+                    <p class="text-muted">No answers yet. Be the first to respond!</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Answer Form -->
+            {% if session.user_id and not question.is_resolved %}
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-reply me-2"></i>Your Answer</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('answer_question', question_id=question.id) }}">
+                        <div class="mb-3">
+                            <textarea class="form-control" id="content" name="content" 
+                                      rows="4" placeholder="Write your answer here..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i>Post Answer
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% elif question.is_resolved %}
+            <div class="alert alert-success mt-4">
+                <i class="fas fa-check-circle me-2"></i>
+                This question has been marked as resolved.
+            </div>
+            {% elif not session.user_id %}
+            <div class="alert alert-info mt-4">
+                <i class="fas fa-info-circle me-2"></i>
+                Please <a href="{{ url_for('login') }}" class="alert-link">login</a> to answer this question.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.answer-card {
+    border-left: 4px solid #6c757d;
+}
+
+.answer-card.border-warning {
+    border-left: 4px solid #ffc107;
+}
+</style>
+{% endblock %}
