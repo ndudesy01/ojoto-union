@@ -20,6 +20,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(120), nullable=False)
     role = db.Column(db.String(20), default='student')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_admin = db.Column(db.Boolean, default=False)  # Added admin field
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -168,40 +169,108 @@ class VolunteerApplication(db.Model):
     applied_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
-# Initialize Database Function
+# ============================================================================
+# UPDATED: Initialize Database Function
+# ============================================================================
 def initialize_database():
-    print("🔄 Creating database tables...")
+    """Initialize database tables"""
     with app.app_context():
-        db.create_all()
-        print("✅ Database tables created successfully!")
-
-        # Create member profiles for existing users
         try:
-            users_without_profiles = User.query.outerjoin(MemberProfile).filter(MemberProfile.id.is_(None)).all()
-            for user in users_without_profiles:
-                profile = MemberProfile(
-                    user_id=user.id,
-                    full_name=user.username,
-                    profession="Member",
-                    bio=f"Active member of Ojoto Union NA1 community",
-                    is_public=True
-                )
-                db.session.add(profile)
+            db.create_all()
+            print("✅ Database tables created successfully!")
 
-            if users_without_profiles:
-                db.session.commit()
-                print(f"✅ Created profiles for {len(users_without_profiles)} users")
-            else:
-                print("ℹ️  All users already have profiles")
+            # Check if we need to create an admin user
+            if User.query.count() == 0:
+                print("ℹ️  No users found, database is fresh")
         except Exception as e:
-            print(f"⚠️  Could not create member profiles: {e}")
+            print(f"❌ Database error: {e}")
 
 
-# Initialize database
+# ============================================================================
+# UPDATED: Initialize Database Function - Modern Approach
+# ============================================================================
+def initialize_database():
+    """Initialize database tables"""
+    with app.app_context():
+        try:
+            db.create_all()
+            print("✅ Database tables created successfully!")
+
+            # Check if we need to create an admin user
+            if User.query.count() == 0:
+                print("ℹ️  No users found, database is fresh")
+        except Exception as e:
+            print(f"❌ Database error: {e}")
+
+
+# Initialize database immediately when app starts
 initialize_database()
 
 
-# Routes
+# ============================================================================
+# ADDED: Debug routes for database status
+# ============================================================================
+@app.route('/reset-db')
+def reset_db():
+    """Temporary route to reset database - remove in production"""
+    try:
+        db.drop_all()
+        db.create_all()
+        return """
+        <h1>Database Reset Successfully!</h1>
+        <p>All tables have been recreated with the latest schema.</p>
+        <p><a href='/register'>Try registering now</a></p>
+        <p><a href='/debug/db'>Check database status</a></p>
+        """
+    except Exception as e:
+        return f"<h1>Reset failed: {e}</h1>"
+
+@app.route('/debug/db')
+def debug_db():
+    """Check database status and tables"""
+    try:
+        # Check if tables exist and have correct columns
+        users_count = User.query.count()
+
+        result = f"""
+        <h1>Database Status</h1>
+        <p><strong>Total Users:</strong> {users_count}</p>
+        <p><strong>Database File:</strong> ojoto_union.db</p>
+        <p><strong>Tables Created:</strong> ✅</p>
+        <p><strong>Schema Updated:</strong> ✅ (includes is_admin column)</p>
+        <hr>
+        <p><a href='/register'>Register New User</a></p>
+        <p><a href='/debug/users'>View All Users</a></p>
+        """
+        return result
+    except Exception as e:
+        return f"<h1>Database Error</h1><p>{e}</p>"
+
+
+@app.route('/debug/users')
+def debug_users():
+    """Display all users in the database"""
+    try:
+        users = User.query.all()
+        result = f"<h1>Total Users: {len(users)}</h1>"
+        for user in users:
+            result += f"""
+            <div style='border: 1px solid #ccc; padding: 10px; margin: 10px;'>
+                <p><strong>ID:</strong> {user.id}</p>
+                <p><strong>Username:</strong> {user.username}</p>
+                <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Role:</strong> {user.role}</p>
+                <p><strong>Is Admin:</strong> {user.is_admin}</p>
+            </div>
+            """
+        return result + "<p><a href='/register'>Register Another User</a></p>"
+    except Exception as e:
+        return f"<h1>Error: {e}</h1>"
+
+
+# ============================================================================
+# UPDATED: Routes with better error handling
+# ============================================================================
 @app.route('/')
 def index():
     try:
@@ -222,8 +291,15 @@ def register():
             password = request.form['password']
             role = request.form.get('role', 'student')
 
+            print(f"🔄 Attempting to register user: {username}, {email}")
+
+            # Check if user already exists
             if User.query.filter_by(username=username).first():
                 flash('Username already exists!', 'error')
+                return redirect(url_for('register'))
+
+            if User.query.filter_by(email=email).first():
+                flash('Email already exists!', 'error')
                 return redirect(url_for('register'))
 
             new_user = User(username=username, email=email, role=role)
@@ -232,10 +308,15 @@ def register():
             db.session.add(new_user)
             db.session.commit()
 
+            print(f"✅ User {username} registered successfully!")
             flash('Registration successful! Please login.', 'success')
             return redirect(url_for('login'))
+
         except Exception as e:
-            flash('Registration error. Please try again.', 'error')
+            db.session.rollback()
+            print(f"❌ REGISTRATION ERROR: {str(e)}")
+            flash(f'Registration failed: {str(e)}', 'error')
+            return redirect(url_for('register'))
 
     return render_template('register.html')
 
@@ -251,7 +332,8 @@ def login():
             session['user_id'] = user.id
             session['username'] = user.username
             session['role'] = user.role
-            session['email'] = user.email  # Store email in session
+            session['email'] = user.email
+            session['is_admin'] = user.is_admin
             flash('Login successful!', 'success')
             return redirect(url_for('index'))
         else:
@@ -784,11 +866,80 @@ def my_applications():
         return render_template('my_applications.html', applications=[])
 
 
+# Admin Routes
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    if 'user_id' not in session or not session.get('is_admin'):
+        return redirect(url_for('login'))
+
+    # Get real stats from database
+    stats = {
+        'total_users': User.query.count(),
+        'volunteer_opportunities': VolunteerOpportunity.query.filter_by(is_active=True).count(),
+        'pending_approvals': VolunteerApplication.query.filter_by(status='pending').count(),
+        'recent_announcements': Announcement.query.filter(
+            Announcement.created_at >= datetime.utcnow().replace(day=1)
+        ).count()
+    }
+
+    # Get recent activity (last 5 announcements)
+    recent_announcements = Announcement.query.order_by(Announcement.created_at.desc()).limit(5).all()
+    recent_activity = [
+        {
+            'username': ann.author,
+            'action': f'Posted: {ann.title}',
+            'timestamp': ann.created_at.strftime('%Y-%m-%d %H:%M')
+        }
+        for ann in recent_announcements
+    ]
+
+    return render_template('admin/dashboard.html', stats=stats, recent_activity=recent_activity)
+
+
+@app.route('/admin/users')
+def admin_users():
+    if 'user_id' not in session or not session.get('is_admin'):
+        return redirect(url_for('login'))
+
+    users = User.query.order_by(User.created_at.desc()).all()
+    return render_template('admin/users.html', users=users)
+
+
+@app.route('/admin/announcements')
+def admin_announcements():
+    if 'user_id' not in session or not session.get('is_admin'):
+        return redirect(url_for('login'))
+
+    announcements = Announcement.query.order_by(Announcement.created_at.desc()).all()
+
+    # Add created_this_month flag for statistics
+    current_month = datetime.utcnow().replace(day=1)
+    for ann in announcements:
+        ann.created_this_month = ann.created_at >= current_month
+
+    return render_template('admin/announcements.html', announcements=announcements)
+
+
+@app.route('/admin/volunteers')
+def admin_volunteers():
+    if 'user_id' not in session or not session.get('is_admin'):
+        return redirect(url_for('login'))
+
+    opportunities = VolunteerOpportunity.query.order_by(VolunteerOpportunity.created_at.desc()).all()
+    applications = VolunteerApplication.query.order_by(VolunteerApplication.applied_at.desc()).all()
+
+    return render_template('admin/volunteers.html', opportunities=opportunities, applications=applications)
+
+
+# ============================================================================
+# UPDATED: Main block with proper database initialization
+# ============================================================================
 if __name__ == '__main__':
     print("🚀 Website running at: http://127.0.0.1:5000")
-    print("✅ Database is ready")
+    print("✅ Database is ready with updated schema")
     print("📝 You can now register and login")
     print("❓ Q&A Forum is now active")
     print("👥 Member Directory is ready")
     print("💬 Discussion Forums are implemented")
+    print("🔧 Admin Panel is now available at /admin/dashboard")
     app.run(debug=True, host='0.0.0.0', port=5000)

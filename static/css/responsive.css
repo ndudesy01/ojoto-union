@@ -1,0 +1,149 @@
+/* Mobile First Responsive Design */
+
+/* Extra small devices (phones, 576px and down) */
+@media (max-width: 576px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .hero-title {
+        font-size: 2rem !important;
+    }
+
+    .hero-description {
+        font-size: 1rem !important;
+    }
+
+    .hero-stats {
+        flex-direction: column;
+        gap: 1rem !important;
+    }
+
+    .stat-item {
+        min-width: 100% !important;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        gap: 1rem !important;
+    }
+
+    .btn-hero-primary,
+    .btn-hero-secondary {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Navigation */
+    .navbar-brand small {
+        display: block !important;
+        margin-left: 0 !important;
+        margin-top: 0.25rem;
+    }
+
+    /* Cards */
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    /* Discussion and Event cards */
+    .discussion-card,
+    .event-card,
+    .community-feature {
+        padding: 1.5rem !important;
+    }
+
+    /* Floating cards in hero */
+    .floating-card {
+        min-width: 120px !important;
+        padding: 10px 15px !important;
+    }
+
+    .floating-card i {
+        font-size: 1.2rem !important;
+    }
+
+    .floating-card span {
+        font-size: 0.8rem !important;
+    }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem !important;
+    }
+
+    .hero-stats {
+        gap: 1.5rem !important;
+    }
+
+    .stat-item {
+        min-width: 120px !important;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 992px) {
+    .hero-title {
+        font-size: 3rem !important;
+    }
+}
+
+/* Fix for mobile menu */
+.navbar-collapse {
+    text-align: center;
+}
+
+.navbar-nav .nav-link {
+    padding: 0.5rem 1rem;
+}
+
+/* Improve touch targets for mobile */
+.btn, .nav-link, .card {
+    touch-action: manipulation;
+}
+
+/* Prevent zoom on input focus for mobile */
+@media (max-width: 768px) {
+    input, select, textarea {
+        font-size: 16px !important;
+    }
+}
+
+/* Better scrolling on mobile */
+html {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for mobile viewport */
+@media (max-width: 576px) {
+    .section-padding {
+        padding: 3rem 0 !important;
+    }
+
+    .display-4 {
+        font-size: 2rem;
+    }
+
+    .lead {
+        font-size: 1rem;
+    }
+}
+
+/* Volunteer page mobile fixes */
+@media (max-width: 768px) {
+    .volunteer-card .card-body {
+        padding: 1rem;
+    }
+
+    .skills-tags .badge {
+        font-size: 0.7rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .opportunity-details p {
+        margin-bottom: 0.5rem !important;
+    }
+}

@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid mt-5 pt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+            <div class="position-sticky pt-3">
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>Admin Panel</span>
+                </h6>
+                <ul class="nav flex-column mb-2">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_users') }}">
+                            <i class="fas fa-users me-2"></i>
+                            Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin_announcements') }}">
+                            <i class="fas fa-bullhorn me-2"></i>
+                            Announcements
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_volunteers') }}">
+                            <i class="fas fa-hands-helping me-2"></i>
+                            Volunteers
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Announcement Management</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="{{ url_for('post_announcement') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>New Announcement
+                    </a>
+                </div>
+            </div>
+
+            <!-- Announcements Table -->
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">All Announcements ({{ announcements|length }})</h6>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="showUrgentOnly">
+                        <label class="form-check-label" for="showUrgentOnly">
+                            Show Urgent Only
+                        </label>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if announcements %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for announcement in announcements %}
+                                <tr class="{% if announcement.is_urgent %}table-warning{% endif %}">
+                                    <td>
+                                        <strong>{{ announcement.title }}</strong>
+                                        {% if announcement.is_urgent %}
+                                        <span class="badge bg-danger ms-1">URGENT</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ announcement.author }}</td>
+                                    <td>
+                                        <span class="badge {% if announcement.is_urgent %}bg-danger{% else %}bg-success{% endif %}">
+                                            {{ 'Urgent' if announcement.is_urgent else 'Normal' }}
+                                        </span>
+                                    </td>
+                                    <td>{{ announcement.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" onclick="viewAnnouncement({{ announcement.id }})">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-warning" onclick="editAnnouncement({{ announcement.id }})">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger" onclick="deleteAnnouncement({{ announcement.id }})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-bullhorn fa-4x text-muted mb-3"></i>
+                        <h4 class="text-muted">No Announcements Yet</h4>
+                        <p class="text-muted">Get started by creating your first announcement.</p>
+                        <a href="{{ url_for('post_announcement') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create First Announcement
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Announcement Statistics -->
+            <div class="row mt-4">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Total Announcements</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ announcements|length }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-bullhorn fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-danger shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                        Urgent Announcements</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        {{ announcements|selectattr('is_urgent', 'equalto', true)|list|length }}
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        This Month</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        {{ announcements|selectattr('created_this_month', 'equalto', true)|list|length }}
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-calendar-alt fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        Different Authors</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        {{ announcements|map(attribute='author')|unique|list|length }}
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-user-edit fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<style>
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.sidebar .nav-link {
+    font-weight: 500;
+    color: #333;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    margin: 0.125rem 0.5rem;
+}
+
+.sidebar .nav-link.active {
+    color: #007bff;
+    background-color: #e9ecef;
+}
+
+@media (max-width: 767.98px) {
+    .sidebar {
+        position: static;
+        height: auto;
+        padding-top: 0;
+    }
+}
+</style>
+
+<script>
+function viewAnnouncement(id) {
+    alert('View announcement ID: ' + id);
+    // Would typically redirect to announcement detail page
+}
+
+function editAnnouncement(id) {
+    alert('Edit announcement ID: ' + id);
+    // Would typically redirect to edit page
+}
+
+function deleteAnnouncement(id) {
+    if (confirm('Are you sure you want to delete this announcement? This action cannot be undone.')) {
+        alert('Delete announcement ID: ' + id);
+        // Would typically make API call to delete
+    }
+}
+
+// Filter urgent announcements
+document.getElementById('showUrgentOnly').addEventListener('change', function() {
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        if (this.checked) {
+            row.style.display = row.classList.contains('table-warning') ? '' : 'none';
+        } else {
+            row.style.display = '';
+        }
+    });
+});
+</script>
+{% endblock %}
